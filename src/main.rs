@@ -2,14 +2,13 @@
 #![no_main]
 
 {% if framework == "stm32rs" -%}
-use panic_halt as _;
+use {defmt_rtt as _, panic_probe as _};
 use cortex_m_rt::entry;
 use stm32f4xx_hal::{
-    gpio::{Output, PushPull},
     pac,
     prelude::*,
-    timer::Timer,
 };
+use defmt::*;
 
 #[entry]
 fn main() -> ! {
@@ -21,24 +20,26 @@ fn main() -> ! {
     // Take ownership over the raw flash and rcc devices and convert them into the corresponding
     // HAL structs
     let rcc = dp.RCC.constrain();
-    let clocks = rcc.cfgr.sysclk(48.MHz()).freeze();
+    let clocks = rcc.cfgr.use_hse(8.MHz()).sysclk(48.MHz()).freeze();
 
     // Acquire the GPIO peripheral
-    let gpioc = dp.GPIOC.split();
+    let gpioa = dp.GPIOA.split();
 
-    // Configure PC13 as a push-pull output (onboard LED on many STM32 boards)
-    let mut led = gpioc.pc13.into_push_pull_output();
+    // Configure PA5 as a push-pull output
+    let mut led = gpioa.pa5.into_push_pull_output();
 
     // Create a delay abstraction based on SysTick
-    let mut timer = Timer::syst(cp.SYST, &clocks).counter_hz();
-    timer.start(1.Hz()).unwrap();
+    let mut delay = cp.SYST.delay(&clocks);
+    delay.delay_ms(5);
+
+    info!("Start toggling the led");
 
     loop {
         // Toggle the LED
         led.toggle();
 
-        // Wait for the timer to expire
-        nb::block!(timer.wait()).unwrap();
+        // Wait for 100 ms
+        delay.delay_ms(100);
     }
 }
 {% endif -%}
@@ -56,8 +57,8 @@ async fn main(_spawner: Spawner) {
 
     let p = embassy_stm32::init(Default::default());
 
-    // Configure PC13 as output (onboard LED on many STM32 boards)
-    let mut led = Output::new(p.PC13, Level::High, Speed::Low);
+    // Configure PA5 as output
+    let mut led = Output::new(p.PA5, Level::High, Speed::Low);
 
     loop {
         info!("high");
