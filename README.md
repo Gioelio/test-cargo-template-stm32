@@ -1,10 +1,10 @@
 # {{project-name}}
 
-A Rust embedded project for STM32 microcontrollers using {% if framework == "stm32rs" %}STM32 HAL{% else %}Embassy{% endif %}.
+A Rust embedded project for STM32 microcontrollers using {%- if framework == "stm32rs" %} STM32 HAL{%- else %} Embassy{%- endif %}.
 
 ## Hardware Target
 
-- **MCU**: {{mcu | upper}}
+- **MCU**: {{mcu}}
 - **Framework**: {{framework}}
 
 ## Getting Started
@@ -34,9 +34,44 @@ Connect your ST-Link debugger and run:
 cargo run --release
 ```
 
+## Examples
+
+This template includes several examples demonstrating common embedded peripherals:
+
+### Available Examples
+
+- **blink** - Basic LED blinking (PC13)
+- **i2c** - I2C communication and device scanning (PB8/PB9)
+- **uart** - UART communication (PA9/PA10)
+- **pwm** - PWM output for LED brightness control (PA8)
+
+### Running Examples
+
+```bash
+# Run the I2C example
+cargo run --example i2c --release
+
+{%- if sensor == "no_sensor" %}
+
+{%- else %}
+# Run WhoAmI example
+cargo run --example whoAmI --release
+
+{%- endif %}
+```
+
+### Example Pin Assignments
+
+| Example | Pins Used | Description |
+|---------|-----------|-------------|
+| blink   | PC13      | Onboard LED (most STM32 boards) |
+| i2c     | PB8 (SCL), PB9 (SDA) | I2C1 interface |
+| uart    | PA9 (TX), PA10 (RX) | USART1 interface |
+| pwm     | PA8       | TIM1_CH1 PWM output |
+
 ## Project Structure
 
-{% if framework == "stm32rs" -%}
+{%- if framework == "stm32rs" %}
 This project uses the STM32 HAL (Hardware Abstraction Layer) which provides:
 - Direct register access with type safety
 - Blocking APIs with explicit error handling
@@ -49,10 +84,10 @@ This project uses the STM32 HAL (Hardware Abstraction Layer) which provides:
 - `memory.x` - Linker script defining memory layout
 - `.cargo/config.toml` - Cargo configuration for embedded target
 
-{% else -%}
+{%- else %}
 This project uses Embassy, an async embedded framework that provides:
 - Async/await support for embedded programming
-- Built-in drivers for many peripherals  
+- Built-in drivers for many peripherals
 - Efficient task scheduling
 - Modern Rust patterns
 
@@ -66,7 +101,7 @@ This project uses Embassy, an async embedded framework that provides:
 
 This project uses `defmt` for efficient logging. Logs will appear in your probe-rs terminal when running the application.
 
-{% endif -%}
+{%- endif %}
 
 ## Development
 

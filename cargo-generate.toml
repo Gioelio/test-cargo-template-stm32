@@ -11,9 +11,18 @@ default = "embassy"
 type = "string"
 prompt = "Which STM32 MCU are you targeting?"
 choices = [
-    "stm32f401"
+    "stm32f401re"
 ]
-default = "stm32f401"
+default = "stm32f401re"
+
+[placeholders.sensor]
+type = "string"
+prompt = "Which sensor you want?"
+choices = [
+    "no_sensor",
+    "lsm6dsv16x"
+]
+default = "no_sensor"
 
 [conditional.'framework == "stm32rs"']
 ignore = [
@@ -23,4 +32,9 @@ ignore = [
 [conditional.'framework == "embassy"']
 ignore = [
     "memory.x"
+]
+
+[conditional.'framework == "no_sensor"']
+ignore = [
+    "src/who_am_i.rs"
 ]

@@ -3,6 +3,17 @@ name = "{{project-name}}"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "{{project-name}}"
+
+[[example]]
+name = "i2c"
+path = "examples/i2c.rs"
+
+[[example]]
+name = "i2c"
+path = "examples/who_am_i.rs"
+
 [dependencies]
 cortex-m = "0.7"
 cortex-m-rt = "0.7"
@@ -12,6 +23,10 @@ panic-halt = "0.2"
 # STM32 HAL dependencies
 stm32f4xx-hal = { version = "0.21", features = ["rt", "{{mcu}}"] }
 nb = "1.0"
+{% endif -%}
+
+{% if sensor == "lsm6dsv16x" -%}
+lsm6dsv16x-rs = "1.0.0"
 {% endif -%}
 
 {% if framework == "embassy" -%}
