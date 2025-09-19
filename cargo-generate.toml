@@ -1,0 +1,26 @@
+[template]
+cargo_generate_version = ">=0.10.0"
+
+[placeholders.framework]
+type = "string"
+prompt = "Which framework would you like to use?"
+choices = ["stm32rs", "embassy"]
+default = "embassy"
+
+[placeholders.mcu]
+type = "string"
+prompt = "Which STM32 MCU are you targeting?"
+choices = [
+    "stm32f401"
+]
+default = "stm32f401"
+
+[conditional.'framework == "stm32rs"']
+ignore = [
+    "defmt.toml"
+]
+
+[conditional.'framework == "embassy"']
+ignore = [
+    "memory.x"
+]
