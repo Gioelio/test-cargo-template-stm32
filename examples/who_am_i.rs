@@ -7,7 +7,7 @@
 #![no_main]
 
 {% if framework == "stm32rs" -%}
-use panic_halt as _;
+use {defmt_rtt as _, panic_probe as _};
 use cortex_m_rt::entry;
 use stm32f4xx_hal::{
     i2c::I2c,
@@ -15,7 +15,6 @@ use stm32f4xx_hal::{
     prelude::*,
     timer::Timer,
 };
-use cortex_m_semihosting::hprintln;
 use lsm6dsv16x_rs::*;
 use lsm6dsv16x_rs::prelude::*;
 
@@ -45,25 +44,12 @@ fn main() -> ! {
     // Check device ID
     let id = sensor.device_id_get().unwrap();
     if id != ID {
-        writeln!(&mut msg, "Unexpected device ID: {}", id).unwrap();
-        let _ = tx.blocking_write(msg.as_bytes());
-        msg.clear();
-        loop {}
+        info!("Unexpected device ID: {}", id);
     }
 
+    info!("Sensor found succesfully...");
 
-
-    loop {
-        // Example: Scan for I2C devices
-        for addr in 0x08..0x78 {
-            if i2c.write(addr, &[]).is_ok() {
-                // Device found at address
-                // In a real application, you would handle this
-            }
-        }
-
-        nb::block!(timer.wait()).unwrap();
-    }
+    loop {}
 }
 {% endif -%}
 
@@ -131,8 +117,7 @@ async fn main(_spawner: Spawner) {
 
     info!("Sensor found succesfully...");
 
-    loop {
-    }
+    loop {}
 }
 
 {% endif -%}

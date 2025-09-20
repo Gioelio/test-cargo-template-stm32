@@ -7,15 +7,14 @@
 #![no_main]
 
 {% if framework == "stm32rs" -%}
-use panic_halt as _;
+use {defmt_rtt as _, panic_probe as _};
 use cortex_m_rt::entry;
 use stm32f4xx_hal::{
-    i2c::I2c,
+    gpio::{Output, PushPull},
     pac,
     prelude::*,
-    timer::Timer,
 };
-use cortex_m_semihosting::hprintln;
+use defmt::*;
 
 #[entry]
 fn main() -> ! {
@@ -38,18 +37,16 @@ fn main() -> ! {
     let mut delay = cp.SYST.delay(&clocks);
     delay.delay_ms(5);
 
-    loop {
-        // Example: Scan for I2C devices
-        for addr in 0x08..0x78 {
-            if i2c.write(addr, &[]).is_ok() {
-                // Device found at address
-                // In a real application, you would handle this
-                hprintln!("Device found at addr: {addr}").unwrap();
-            }
+    // Example: Scan for I2C devices
+    for addr in 0x08..0x78 {
+        if i2c.write(addr, &[]).is_ok() {
+            // Device found at address
+            // In a real application, you would handle this
+            info!("Device found at addr: {addr}");
         }
-
-        nb::block!(timer.wait()).unwrap();
     }
+
+    loop {}
 }
 {% endif -%}
 
