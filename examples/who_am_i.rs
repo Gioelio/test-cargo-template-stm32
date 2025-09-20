@@ -68,6 +68,13 @@ fn main() -> ! {
 {% endif -%}
 
 {% if framework == "embassy" -%}
+//! Who_am_i example
+//!
+//! This example demonstrates how to read WHO_AM_I register using lsm6dsv16x driver
+//! Default pins: PB8 (SCL), PB9 (SDA)
+
+#![no_std]
+#![no_main]
 use defmt::*;
 use cortex_m::prelude::*;
 use embassy_executor::Spawner;
@@ -79,8 +86,13 @@ use embassy_stm32::{
     bind_interrupts
 };
 use embassy_time::Delay;
-use {defmt_rtt as _, panic_halt as _};
+use {defmt_rtt as _, panic_probe as _};
 use lsm6dsv16x_rs::*;
+
+#[defmt::panic_handler]
+fn panic() -> ! {
+    core::panic!("panic via `defmt::panic!`")
+}
 
 bind_interrupts!(struct Irqs {
     I2C1_EV => i2c::EventInterruptHandler<peripherals::I2C1>;
@@ -122,4 +134,5 @@ async fn main(_spawner: Spawner) {
     loop {
     }
 }
+
 {% endif -%}

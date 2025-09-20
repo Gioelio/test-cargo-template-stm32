@@ -11,7 +11,7 @@ name = "i2c"
 path = "examples/i2c.rs"
 
 [[example]]
-name = "i2c"
+name = "who_am_i"
 path = "examples/who_am_i.rs"
 
 [dependencies]
@@ -21,7 +21,9 @@ panic-halt = "0.2"
 
 {% if framework == "stm32rs" -%}
 # STM32 HAL dependencies
-stm32f4xx-hal = { version = "0.21", features = ["rt", "{{mcu}}"] }
+{% if mcu == "stm32f401re" -%}
+stm32f4xx-hal = { version = "0.21", features = ["stm32f401"] }
+{% endif -%}
 nb = "1.0"
 {% endif -%}
 
