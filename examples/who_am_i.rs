@@ -13,10 +13,10 @@ use stm32f4xx_hal::{
     i2c::I2c,
     pac,
     prelude::*,
-    timer::Timer,
 };
+use defmt::*;
+
 use lsm6dsv16x_rs::*;
-use lsm6dsv16x_rs::prelude::*;
 
 #[entry]
 fn main() -> ! {
@@ -33,13 +33,13 @@ fn main() -> ! {
     let sda = gpiob.pb9.into_alternate().set_open_drain();
 
     // Create I2C interface
-    let mut i2c = I2c::new(dp.I2C1, (scl, sda), 400.kHz(), &clocks);
+    let i2c = I2c::new(dp.I2C1, (scl, sda), 400.kHz(), &clocks);
 
     // Wait a boot time
     let mut delay = cp.SYST.delay(&clocks);
     delay.delay_ms(5);
 
-    let mut sensor = Lsm6dsv16x::new_i2c(i2c, I2CAddress::I2cAddH, delay.clone());
+    let mut sensor = Lsm6dsv16x::new_i2c(i2c, I2CAddress::I2cAddH, delay);
 
     // Check device ID
     let id = sensor.device_id_get().unwrap();

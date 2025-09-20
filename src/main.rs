@@ -5,7 +5,6 @@
 use {defmt_rtt as _, panic_probe as _};
 use cortex_m_rt::entry;
 use stm32f4xx_hal::{
-    gpio::{Output, PushPull},
     pac,
     prelude::*,
 };
@@ -24,7 +23,7 @@ fn main() -> ! {
     let clocks = rcc.cfgr.use_hse(8.MHz()).sysclk(48.MHz()).freeze();
 
     // Acquire the GPIO peripheral
-    let gpioa = dp.GPIOC.split();
+    let gpioa = dp.GPIOA.split();
 
     // Configure PA5 as a push-pull output
     let mut led = gpioa.pa5.into_push_pull_output();

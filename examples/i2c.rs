@@ -10,11 +10,11 @@
 use {defmt_rtt as _, panic_probe as _};
 use cortex_m_rt::entry;
 use stm32f4xx_hal::{
-    gpio::{Output, PushPull},
     pac,
+    i2c::I2c,
     prelude::*,
 };
-use defmt::*;
+
 
 #[entry]
 fn main() -> ! {
@@ -42,7 +42,7 @@ fn main() -> ! {
         if i2c.write(addr, &[]).is_ok() {
             // Device found at address
             // In a real application, you would handle this
-            info!("Device found at addr: {addr}");
+            info!("Device found at addr: {}", addr);
         }
     }
 
