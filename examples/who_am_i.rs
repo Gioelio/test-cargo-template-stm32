@@ -45,9 +45,9 @@ fn main() -> ! {
     let id = sensor.device_id_get().unwrap();
     if id != ID {
         info!("Unexpected device ID: {}", id);
+    } else {
+        info!("Sensor found succesfully...");
     }
-
-    info!("Sensor found succesfully...");
 
     loop {}
 }
@@ -106,9 +106,9 @@ async fn main(_spawner: Spawner) {
     if id != ID {
         info!("Error: ID Sensor don't match expected!");
         loop {}
+    } else {
+        info!("Sensor found succesfully...");
     }
-
-    info!("Sensor found succesfully...");
 
     loop {}
 }
